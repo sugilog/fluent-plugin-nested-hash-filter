@@ -1,11 +1,7 @@
 module Fluent
   module Plugin
-    module Nested
-      module Hash
-        module Filter
-          VERSION = "0.1.0"
-        end
-      end
+    module NestedHashFilter
+      VERSION = "0.0.1"
     end
   end
 end

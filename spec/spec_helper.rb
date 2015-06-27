@@ -1,2 +1,2 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'fluent/plugin/nested/hash/filter'
+require 'fluent/plugin/nested_hash_filter'

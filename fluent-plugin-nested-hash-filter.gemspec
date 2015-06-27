@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fluent/plugin/nested/hash/filter/version'
+require 'fluent/plugin/nested_hash_filter/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-nested-hash-filter"
-  spec.version       = Fluent::Plugin::Nested::Hash::Filter::VERSION
+  spec.version       = Fluent::Plugin::NestedHashFilter::VERSION
   spec.authors       = ["sugilog"]
   spec.email         = ["sugilog@gmail.com"]
 

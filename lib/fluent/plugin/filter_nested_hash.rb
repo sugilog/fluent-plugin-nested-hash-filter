@@ -1,8 +1,8 @@
 require "fluent/plugin/nested_hash_filter/nested_object"
 
 module Fluent
-  class FilterNestedHash < Fluent::Filter
-    Plugin.register_filter("nested_hash", self)
+  class FilterNestedHash < Filter
+    Plugin.register_filter("filter_nested_hash", self)
 
     def configure conf
       super

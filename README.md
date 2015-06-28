@@ -1,6 +1,7 @@
 # fluent-plugin-nested-hash-filter
 
-https://travis-ci.org/sugilog/fluent-plugin-nested-hash-filter.svg
+[![Build Status](https://travis-ci.org/sugilog/fluent-plugin-nested-hash-filter.png?branch=master)](https://travis-ci.org/sugilog/fluent-plugin-nested-hash-filter.svg)
+
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fluent/plugin/filter_nested_hash`.
 

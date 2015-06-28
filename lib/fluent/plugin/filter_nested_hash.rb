@@ -2,7 +2,7 @@ require "fluent/plugin/nested_hash_filter/nested_object"
 
 module Fluent
   class FilterNestedHash < Filter
-    Plugin.register_filter("filter_nested_hash", self)
+    Plugin.register_filter("nested_hash_filter", self)
 
     def configure conf
       super

@@ -9,23 +9,36 @@ TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
-Add this line to your application's Gemfile:
+install to your td-agent env
 
 ```ruby
-gem 'fluent-plugin-nested-hash-filter'
+td-agent-gem install fluent-plugin-nested-hash-filter
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install fluent-plugin-nested-hash-filter
 
 ## Usage
 
-TODO: Write usage instructions here
+Add config to your `td-agent.conf`
+
+**Filter**: just only convert passed hash into flatten key-value pair.
+
+```
+<filter {MATCH_PATTERN}>
+  type nested_hash
+</filter>
+```
+
+**Output**: convert passed hash into flatten key-value pair, and rename tag.
+
+```
+<match {MATCH_PATTERN}>
+  type       nested_hash
+  tag_prefix {PREFIX}
+</match>
+```
+
+`tag_prefix` is required parameter to add prefix to matched tag name.
+
+- ex: matched tag is `access.log` and `tag_prefix` is `converted.`, then log will be passed with tag name `converted.access.log`.
 
 ## Development
 

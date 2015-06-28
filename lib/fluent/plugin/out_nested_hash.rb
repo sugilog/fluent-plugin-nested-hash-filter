@@ -2,7 +2,7 @@ require "fluent/plugin/nested_hash_filter/nested_object"
 
 module Fluent
   class OutNestedHash < Output
-    Plugin.register_output("nested_hash_filter", self)
+    Plugin.register_output("nested_hash", self)
 
     def configure conf
       super

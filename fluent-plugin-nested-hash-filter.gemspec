@@ -1,17 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fluent/plugin/nested_hash_filter/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-nested-hash-filter"
-  spec.version       = Fluent::Plugin::NestedHashFilter::VERSION
+  spec.version       = "0.0.1"
   spec.authors       = ["sugilog"]
   spec.email         = ["sugilog@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Fluent Plugin for converting nested hash into flatten key-value pair.}
+  spec.description   = %q{Fluent Plugin for converting nested hash into flatten key-value pair.}
+  spec.homepage      = "https://github.com/sugilog/fluent-plugin-nested-hash-filter"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
@@ -29,4 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.9"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_runtime_dependency "fluentd"
+  spec.add_development_dependency "test-unit"
+  spec.add_development_dependency "guard"
+  spec.add_development_dependency "guard-test"
 end

@@ -33,12 +33,19 @@ class OutNestedHashTest < Test::Unit::TestCase
 
   sub_test_case "configure" do
     test "check_default" do
-      create_driver "tag_prefix default"
+      driver = create_driver "tag_prefix default"
+      assert_equal "default", driver.instance.tag_prefix
+      assert_equal nil, driver.instance.connector
     end
 
-    test "tag_prefix" do
+    test "with tag_prefix" do
       driver = create_driver "tag_prefix filtered."
       assert_equal "filtered.", driver.instance.tag_prefix
+    end
+
+    test "with connector" do
+      driver = create_driver "tag_prefix default\nconnector -"
+      assert_equal "-", driver.instance.connector
     end
   end
 
@@ -55,6 +62,23 @@ class OutNestedHashTest < Test::Unit::TestCase
       assert_equal expect_message, result[:message]
 
       expect_message = {"a.b.c" => 1, "a.b.d.e" => 2, "a.b.d.f" => 3, "a.b.g.0" => 10, "a.b.g.1" => 20, "a.b.g.2" => 30, "a.h" => nil, "a.i" => nil}
+      result = emitted driver, 1
+      assert_equal "filtered.test", result[:tag]
+      assert_equal expect_message, result[:message]
+    end
+
+    test "with connector" do
+      driver = emit "tag_prefix filtered.\nconnector -", "test", [
+        {a: 1, b: {c: 2, d: {e: 3, f:4}, g: [10, 20, 30]}, h: [], i: {}},
+        {a: {b: {c: 1, d: {e: 2, f:3}, g: [10, 20, 30]}, h: [], i: {}}}
+      ]
+
+      expect_message = {"a" => 1, "b-c" => 2, "b-d-e" => 3, "b-d-f" => 4, "b-g-0" => 10, "b-g-1" => 20, "b-g-2" => 30, "h" => nil, "i" => nil}
+      result = emitted driver, 0
+      assert_equal "filtered.test", result[:tag]
+      assert_equal expect_message, result[:message]
+
+      expect_message = {"a-b-c" => 1, "a-b-d-e" => 2, "a-b-d-f" => 3, "a-b-g-0" => 10, "a-b-g-1" => 20, "a-b-g-2" => 30, "a-h" => nil, "a-i" => nil}
       result = emitted driver, 1
       assert_equal "filtered.test", result[:tag]
       assert_equal expect_message, result[:message]

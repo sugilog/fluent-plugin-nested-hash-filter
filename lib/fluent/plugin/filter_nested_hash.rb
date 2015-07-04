@@ -4,6 +4,8 @@ module Fluent
   class FilterNestedHash < Filter
     Plugin.register_filter("nested_hash", self)
 
+    config_param :connector, :string, :default => nil
+
     def configure conf
       super
     end
@@ -17,7 +19,7 @@ module Fluent
     end
 
     def filter tag, time, record
-      Fluent::NestedHashFilter::NestedObject.convert record
+      Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector
     end
   end
 end

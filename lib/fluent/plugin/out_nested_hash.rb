@@ -5,6 +5,7 @@ module Fluent
     Plugin.register_output("nested_hash", self)
 
     config_param :tag_prefix, :string
+    config_param :connector,  :string, :default => nil
 
     def configure conf
       super
@@ -20,7 +21,7 @@ module Fluent
 
     def emit tag, es, chain
       es.each do |time, record|
-        record = Fluent::NestedHashFilter::NestedObject.convert record
+        record = Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector
         Fluent::Engine.emit @tag_prefix + tag, time, record
       end
 

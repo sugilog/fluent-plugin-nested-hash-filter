@@ -33,9 +33,13 @@ class FilterNestedHashTest < Test::Unit::TestCase
 
   sub_test_case "configure" do
     test "check default" do
-      assert_nothing_raised do
-        create_driver "default"
-      end
+      driver = create_driver "default"
+      assert_equal nil, driver.instance.connector
+    end
+
+    test "with connector" do
+      driver = create_driver "connector -"
+      assert_equal "-", driver.instance.connector
     end
   end
 
@@ -51,6 +55,21 @@ class FilterNestedHashTest < Test::Unit::TestCase
       assert_equal expect_message, result[:message]
 
       expect_message = {"a.b.c" => 1, "a.b.d.e" => 2, "a.b.d.f" => 3, "a.b.g.0" => 10, "a.b.g.1" => 20, "a.b.g.2" => 30, "a.h" => nil, "a.i" => nil}
+      result = filtered driver, 1
+      assert_equal expect_message, result[:message]
+    end
+
+    test "with connector" do
+      driver = emit "connector -", [
+        {a: 1, b: {c: 2, d: {e: 3, f:4}, g: [10, 20, 30]}, h: [], i: {}},
+        {a: {b: {c: 1, d: {e: 2, f:3}, g: [10, 20, 30]}, h: [], i: {}}}
+      ]
+
+      expect_message = {"a" => 1, "b-c" => 2, "b-d-e" => 3, "b-d-f" => 4, "b-g-0" => 10, "b-g-1" => 20, "b-g-2" => 30, "h" => nil, "i" => nil}
+      result = filtered driver, 0
+      assert_equal expect_message, result[:message]
+
+      expect_message = {"a-b-c" => 1, "a-b-d-e" => 2, "a-b-d-f" => 3, "a-b-g-0" => 10, "a-b-g-1" => 20, "a-b-g-2" => 30, "a-h" => nil, "a-i" => nil}
       result = filtered driver, 1
       assert_equal expect_message, result[:message]
     end

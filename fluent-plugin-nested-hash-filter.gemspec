@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-nested-hash-filter"
-  spec.version       = "0.0.4"
+  spec.version       = "0.1.0"
   spec.authors       = ["sugilog"]
   spec.email         = ["sugilog@gmail.com"]
 

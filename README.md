@@ -24,6 +24,7 @@ Add config to your `td-agent.conf`
 ```
 <filter {MATCH_PATTERN}>
   type nested_hash
+  connector .
 </filter>
 ```
 
@@ -33,10 +34,13 @@ Add config to your `td-agent.conf`
 <match {MATCH_PATTERN}>
   type       nested_hash
   tag_prefix {PREFIX}
+  connector  .
 </match>
 ```
 
 `tag_prefix` is required parameter to add prefix to matched tag name.
+
+`connector` is optional parameter to connect nested-keys. (default: `.`) not for tag prefix connection.
 
 - ex: matched tag is `access.log` and `tag_prefix` is `converted.`, then log will be passed with tag name `converted.access.log`.
 

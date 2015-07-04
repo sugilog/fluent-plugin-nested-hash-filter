@@ -1,21 +1,22 @@
 module Fluent
   module NestedHashFilter
-    module NestedObject
+    class NestedObject
       CONNECTOR = "."
 
-      def self.init
+      def self.convert object
+        converter = new
+        converter.select object
+        converter.output
+      end
+
+      attr_accessor :output, :output_keys
+
+      def initialize
         @output = {}
         @output_keys = []
       end
 
-      def self.convert object
-        init
-        select object
-
-        @output
-      end
-
-      def self.select object
+      def select object
         case object
         when Hash
           convert_hash object
@@ -26,25 +27,25 @@ module Fluent
         end
       end
 
-      def self.add_key key
+      def add_key key
         @output_keys.push key
       end
 
-      def self.pop_key
+      def pop_key
         @output_keys.pop
       end
 
-      def self.current_key
+      def current_key
         @output_keys.join CONNECTOR
       end
 
-      def self.update value
+      def update value
         unless current_key.empty?
           @output.update current_key => value
         end
       end
 
-      def self.convert_hash hash
+      def convert_hash hash
         if hash.keys.empty?
           update nil
         end
@@ -56,7 +57,7 @@ module Fluent
         end
       end
 
-      def self.convert_array array
+      def convert_array array
         if array.empty?
           update nil
         end

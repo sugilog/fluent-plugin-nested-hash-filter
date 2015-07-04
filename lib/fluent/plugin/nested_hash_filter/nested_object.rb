@@ -1,19 +1,21 @@
 module Fluent
   module NestedHashFilter
     class NestedObject
-      CONNECTOR = "."
+      DEFAULT_CONNECTOR = "."
 
-      def self.convert object
-        converter = new
+      def self.convert object, options = {}
+        converter = new options
         converter.select object
         converter.output
       end
 
       attr_accessor :output, :output_keys
+      attr_reader   :connector
 
-      def initialize
-        @output = {}
+      def initialize options = {}
+        @output      = {}
         @output_keys = []
+        @connector   = options[:connector] || DEFAULT_CONNECTOR
       end
 
       def select object
@@ -36,7 +38,7 @@ module Fluent
       end
 
       def current_key
-        @output_keys.join CONNECTOR
+        @output_keys.join connector
       end
 
       def update value

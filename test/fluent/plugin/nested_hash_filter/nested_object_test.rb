@@ -3,19 +3,19 @@ require "fluent/plugin/nested_hash_filter/nested_object"
 
 class NestedObjectTest < Test::Unit::TestCase
   setup do
-    @instance = Fluent::NestedHashFilter::NestedObject.new
+    @instance = klass.new
   end
 
   sub_test_case "constants" do
-    test "::CONNECTOR" do
-      assert_equal ".", Fluent::NestedHashFilter::NestedObject::CONNECTOR
+    test "::DEFAULT_CONNECTOR" do
+      assert_equal ".", klass::DEFAULT_CONNECTOR
     end
   end
 
   sub_test_case "convert" do
     test "convert by multi time" do
       hash = {"a" => 1, "b" => {"c" => 2, "d" => 3}, "e" => [4, 5], "f" => {}, "g" => []}
-      output = Fluent::NestedHashFilter::NestedObject.convert hash
+      output = klass.convert hash
       assert_equal Set["a", "b.c", "b.d", "e.0", "e.1", "f", "g"], output.keys.to_set
       assert_equal 1,   output["a"]
       assert_equal 2,   output["b.c"]
@@ -26,12 +26,27 @@ class NestedObjectTest < Test::Unit::TestCase
       assert_equal nil, output["g"]
 
       hash = {"a" => {"b" => {"c" => 1, "d" => 2}, "e" => [3, 4]}}
-      output = Fluent::NestedHashFilter::NestedObject.convert hash
+      output = klass.convert hash
       assert_equal Set["a.b.c", "a.b.d", "a.e.0", "a.e.1"], output.keys.to_set
       assert_equal 1, output["a.b.c"]
       assert_equal 2, output["a.b.d"]
       assert_equal 3, output["a.e.0"]
       assert_equal 4, output["a.e.1"]
+    end
+  end
+
+  sub_test_case "initialize" do
+    test "without options" do
+      assert_equal Hash.new, @instance.output 
+      assert_equal Array.new, @instance.output_keys
+      assert_equal ".", @instance.connector
+    end
+
+    test "with options" do
+      @instance = klass.new connector: "-"
+      assert_equal Hash.new, @instance.output 
+      assert_equal Array.new, @instance.output_keys
+      assert_equal "-", @instance.connector
     end
   end
 
@@ -129,6 +144,13 @@ class NestedObjectTest < Test::Unit::TestCase
     test "without output_keys" do
       assert_equal "", @instance.current_key
     end
+
+    test "for not default connector" do
+      @instance = klass.new connector: "-"
+      @instance.add_key "test"
+      @instance.add_key 1
+      assert_equal "test-1", @instance.current_key
+    end
   end
 
   sub_test_case "update" do
@@ -201,5 +223,9 @@ class NestedObjectTest < Test::Unit::TestCase
 
   def output_keys
     @instance.output_keys
+  end
+
+  def klass
+    Fluent::NestedHashFilter::NestedObject
   end
 end

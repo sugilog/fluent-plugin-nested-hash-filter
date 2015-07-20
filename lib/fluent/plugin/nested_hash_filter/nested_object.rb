@@ -1,3 +1,5 @@
+require 'json'
+
 module Fluent
   module NestedHashFilter
     class NestedObject
@@ -9,13 +11,14 @@ module Fluent
         converter.output
       end
 
-      attr_accessor :output, :output_keys
+      attr_accessor :output, :output_keys, :jsonify_keys
       attr_reader   :connector
 
       def initialize options = {}
-        @output      = {}
-        @output_keys = []
-        @connector   = options[:connector] || DEFAULT_CONNECTOR
+        @output       = {}
+        @output_keys  = []
+        @connector    = options[:connector] || DEFAULT_CONNECTOR
+        @jsonify_keys = init_jsonify_keys options[:jsonify_keys]
       end
 
       def select object
@@ -41,10 +44,45 @@ module Fluent
         @output_keys.join connector
       end
 
+      def acts_as_json value
+        json = JSON.parse value
+        select json
+      rescue TypeError => error
+        err = JSON::ParserError.new error.message
+        err.set_backtrace err.backtrace
+        raise err
+      rescue JSON::ParserError => error
+        raise error
+      ensure
+        jsonified!
+      end
+
+      def jsonify_key?
+        !!@jsonify_keys[current_key]
+      end
+
+      def jsonified!
+        @jsonify_keys[current_key] = false
+      end
+
+      def init_jsonify_keys keys
+        keys = keys || []
+        values = [true] * keys.size
+        zipped = keys.zip values
+        Hash[ zipped ]
+      end
+
       def update value
-        unless current_key.empty?
+        case
+        when current_key.empty?
+          return
+        when jsonify_key?
+          acts_as_json value
+        else
           @output.update current_key => value
         end
+      rescue JSON::ParserError
+        @output.update current_key => value
       end
 
       def convert_hash hash

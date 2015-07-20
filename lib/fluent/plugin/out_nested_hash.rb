@@ -6,6 +6,7 @@ module Fluent
 
     config_param :tag_prefix, :string
     config_param :connector,  :string, :default => nil
+    config_param :acts_as_json, :array, :default => []
 
     def configure conf
       super
@@ -21,7 +22,7 @@ module Fluent
 
     def emit tag, es, chain
       es.each do |time, record|
-        record = Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector
+        record = Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector, jsonify_keys: @acts_as_json
         Fluent::Engine.emit @tag_prefix + tag, time, record
       end
 

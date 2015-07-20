@@ -5,6 +5,7 @@ module Fluent
     Plugin.register_filter("nested_hash", self)
 
     config_param :connector, :string, :default => nil
+    config_param :acts_as_json, :array, :default => []
 
     def configure conf
       super
@@ -19,7 +20,7 @@ module Fluent
     end
 
     def filter tag, time, record
-      Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector
+      Fluent::NestedHashFilter::NestedObject.convert record, connector: @connector, jsonify_keys: @acts_as_json
     end
   end
 end

@@ -26,6 +26,7 @@ Add config to your `td-agent.conf`
 <filter {MATCH_PATTERN}>
   type nested_hash
   connector .
+  acts_as_json ["key1", "key2-1.key2-2"]
 </filter>
 ```
 
@@ -36,12 +37,15 @@ Add config to your `td-agent.conf`
   type       nested_hash
   tag_prefix {PREFIX}
   connector  .
+  acts_as_json ["key1", "key2-1.key2-2"]
 </match>
 ```
 
 `tag_prefix` is required parameter to add prefix to matched tag name.
 
 `connector` is optional parameter to connect nested-keys. (default: `.`) not for tag prefix connection.
+
+`acts_as_json` is optional parameter to convert string to hash in json format. (default: `[]` empty)
 
 - ex: matched tag is `access.log` and `tag_prefix` is `converted.`, then log will be passed with tag name `converted.access.log`.
 

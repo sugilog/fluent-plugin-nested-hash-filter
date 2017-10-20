@@ -1,5 +1,6 @@
 require "test_helper"
 require "fluent/plugin/out_nested_hash"
+require "fluent/test/driver/output"
 
 class OutNestedHashTest < Test::Unit::TestCase
   include Fluent
@@ -9,17 +10,18 @@ class OutNestedHashTest < Test::Unit::TestCase
     @time = Fluent::Engine.now
   end
 
-  def create_driver config = "", tag = "test"
-    driver = Fluent::Test::OutputTestDriver.new OutNestedHash, tag
+  def create_driver config = ""
+    driver = Fluent::Test::Driver::Output.new Plugin::OutNestedHash
     driver.configure config
   end
 
   def emit config, tag, messages
-    driver = create_driver config, tag
+    driver = create_driver config
 
-    driver.run do
+    driver.run(default_tag: tag) do
       messages.each do |message|
-        driver.emit message
+        message = [message] if message.is_a?(String)
+        driver.feed message
       end
     end
 
@@ -27,7 +29,7 @@ class OutNestedHashTest < Test::Unit::TestCase
   end
 
   def emitted driver, index
-    result = driver.emits[index]
+    result = driver.events[index]
     {tag: result[0], time: result[1], message: result[2]}
   end
 

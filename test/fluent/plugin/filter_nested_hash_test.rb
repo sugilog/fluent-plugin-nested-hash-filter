@@ -1,5 +1,6 @@
 require "test_helper"
 require "fluent/plugin/filter_nested_hash"
+require "fluent/test/driver/filter"
 
 class FilterNestedHashTest < Test::Unit::TestCase
   include Fluent
@@ -10,25 +11,26 @@ class FilterNestedHashTest < Test::Unit::TestCase
   end
 
   def create_driver config = ""
-    driver = Test::FilterTestDriver.new FilterNestedHash
-    driver.configure config, true
+    driver = Test::Driver::Filter.new Plugin::FilterNestedHash
+    driver.configure config
   end
 
   def emit config, messages
     driver = create_driver config
 
-    driver.run do
+    driver.run(default_tag: 'test') do
       messages.each do |message|
-        driver.emit message, @time
+        message = [message] if message.is_a?(String)
+        driver.feed message
       end
     end
-    
+
     driver
   end
 
   def filtered driver, index
-    result = driver.filtered_as_array[index]
-    {tag: result[0], time: result[1], message: result[2]}
+    result = driver.filtered[index]
+    {time: result[0], message: result[1]}
   end
 
   sub_test_case "configure" do
